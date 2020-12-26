@@ -1,29 +1,123 @@
-//Listen to form
-document.querySelector('#temp-form').addEventListener('submit', claculateResult);
+//Defining UI
+const UIcelsius = document.querySelector('#result-celsius');
+const UIfahrenheit = document.querySelector('#result-fahrenheit');
+const UIkelvin = document.querySelector('#result-kelvin');
+const UIrankine = document.querySelector('#result-rankine');
+const UIinputValue = document.querySelector('#UIinputValue');
+const UIinputValueUnit = document.querySelector('#UIinputValueUnit');
+const audio = document.querySelector('#playAudio');
 
-//Claculate result function
-function claculateResult(e){
-    //defining UI
-    const UIfahrenheit = document.querySelector('#fahrenheit');
-    const UIconverter = document.querySelector('#converter');
+//Gathering videos
+const defaultVideo = document.querySelector('#default-video');
+const summerVideo = document.querySelector('#summer-video');
+const autumnVideo = document.querySelector('#auttum-video');
+const winterVideo = document.querySelector('#winter-video');
 
-    UIconverter.addEventListener("change", claculateConverter);
+//Initially hide every video except defaut
+summerVideo.style.display = 'none';
+autumnVideo.style.display = 'none';
+winterVideo.style.display = 'none';
+
+//Defining Calculating elements
+const calculateBtn = document.querySelector('.calculateBtn');
+const temperatureUnit = document.querySelector('#tempUnit');
+
+//Listen for value when calculated clicked
+calculateBtn.addEventListener('click',calculateResult);
+//Listen for value when option is clicked
+temperatureUnit.addEventListener('click',changeUIUnit);
+
+//Defining variables in global scope so that it can be use in outer function.
+let celsius,fahrenheit,kelvin,rankine;
+
+//Calculate function
+function calculateResult(e){
+    //getting the input value
+    let inputNumber = parseInt(UIinputValue.value);
+
+    //getting the values from option
+    let optionValue = (temperatureUnit.options[temperatureUnit.selectedIndex].text).toLowerCase();
+
+    //Checking the input and assigning if statement according to that
+    if(optionValue == "select your desire temperature unit" || isNaN(inputNumber)){
+       alert('Please Enter Both Number / Temperature Value');
+
+    }else
+        if(optionValue == "celsius"){
+            celsius = inputNumber;
+            fahrenheit = ((inputNumber * 9/5)+32).toFixed(2);
+            kelvin = (inputNumber + 273.15).toFixed(2);
+            rankine =(inputNumber * 9/5 + 491.67).toFixed(2);
+            UIresultOutput();
+        };
+        if(optionValue == "fahrenheit"){
+            celsius = ((inputNumber-32)*5/9).toFixed(2);
+            fahrenheit = inputNumber;
+            kelvin = (((inputNumber-32)*5/9)+273.15).toFixed(2);
+            rankine =(inputNumber+ 491.67).toFixed(2);
+            UIresultOutput();
+        };
+        if(optionValue == "kelvin"){
+            celsius = (inputNumber - 273.15).toFixed(2);
+            fahrenheit = ((inputNumber - 273.15)*9/5 + 32).toFixed(2);
+            kelvin = inputNumber;
+            rankine =(inputNumber * 1.8).toFixed(2);
+            UIresultOutput();
+        }
+        if(optionValue == "rankine"){
+            celsius = ((inputNumber - 491.67)*5/9).toFixed(2);
+            fahrenheit = (inputNumber - 459.67).toFixed(2);
+            kelvin = (inputNumber*5/9).toFixed(2);
+            rankine =inputNumber;
+            UIresultOutput();
+        }
 
     e.preventDefault();
+};
+
+//Dynamically Unit changing function
+function changeUIUnit(){
+    let UIoptionValue = (temperatureUnit.options[temperatureUnit.selectedIndex].text).toLowerCase();
+        if(UIoptionValue == 'celsius'){
+            UIinputValueUnit.innerHTML ='&deg;C';
+        }
+        if(UIoptionValue == 'fahrenheit'){
+            UIinputValueUnit.innerHTML ='&deg;F';
+        }
+        if(UIoptionValue == 'kelvin'){
+            UIinputValueUnit.innerHTML ='&deg;K';
+        }
+        if(UIoptionValue == 'rankine'){
+            UIinputValueUnit.innerHTML ='&deg;R';
+        }
 }
-function claculateConverter(){
-    const converterValue =UIconverter[UIconverter.selectedIndex].value;
-    //Getting result UI
-    const result = document.querySelector('#result');
-    const celsiusValue =((UIfahrenheit-32)*5/9);
-    const kelvinValue =((UIfahrenheit-32)*5/9)+273.15;
-    const rankineValue = (UIfahrenheit+459.67);
-    console.log(celsiusValue);
-    if(converterValue == "celsius"){
-        result.appendChild(document.createTextNode(celsiusValue));
-    }if(converterValue == "kelvin"){
-        result.appendChild(document.createTextNode(kelvinValue));
-    }if(converterValue == "rankine"){
-        result.appendChild(document.createTextNode(rankineValue));
+//test
+const inputEle = document.querySelectorAll('input');
+
+//Appending result into UI function
+function UIresultOutput(){
+    UIcelsius.value = celsius;
+    UIfahrenheit.value = fahrenheit;
+    UIkelvin.value = kelvin;
+    UIrankine.value = rankine;
+    if(celsius >= 30){
+        summerVideo.style.display = 'block';
+    }
+    if(celsius >= 20  &&  celsius <= 29){
+        autumnVideo.style.display = 'block';
+    }
+    if(celsius <= 19){
+        winterVideo.style.display = 'block';
     }
 }
+
+//Audio Malfunction
+var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+if (!isChrome){
+    $('#iframeAudio').remove()
+}
+else {
+    $('#playAudio').remove() // just to make sure that it will not have 2x audio in the background 
+}
+//lower audio volume
+audio.volume = 0.8;

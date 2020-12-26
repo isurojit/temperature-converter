@@ -5,7 +5,6 @@ const UIkelvin = document.querySelector('#result-kelvin');
 const UIrankine = document.querySelector('#result-rankine');
 const UIinputValue = document.querySelector('#UIinputValue');
 const UIinputValueUnit = document.querySelector('#UIinputValueUnit');
-const audio = document.querySelector('#playAudio');
 
 //Gathering videos
 const defaultVideo = document.querySelector('#default-video');
@@ -91,8 +90,6 @@ function changeUIUnit(){
             UIinputValueUnit.innerHTML ='&deg;R';
         }
 }
-//test
-const inputEle = document.querySelectorAll('input');
 
 //Appending result into UI function
 function UIresultOutput(){
@@ -102,22 +99,25 @@ function UIresultOutput(){
     UIrankine.value = rankine;
     if(celsius >= 30){
         summerVideo.style.display = 'block';
+        autumnVideo.style.display = 'none';
+        winterVideo.style.display = 'none';
+        defaultVideo.style.display = 'none';
     }
-    if(celsius >= 20  &&  celsius <= 29){
+   else if(celsius >= 20  &&  celsius <= 29){
+        summerVideo.style.display = 'none';
         autumnVideo.style.display = 'block';
+        winterVideo.style.display = 'none';
+        defaultVideo.style.display = 'none';
     }
-    if(celsius <= 19){
+    else {
+        summerVideo.style.display = 'none';
+        autumnVideo.style.display = 'none';
         winterVideo.style.display = 'block';
+        defaultVideo.style.display = 'none';
     }
-}
 
-//Audio Malfunction
-var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
-if (!isChrome){
-    $('#iframeAudio').remove()
+    //clear Input
+    UIinputValue.value = '';
+    UIinputValueUnit.value = '';
+
 }
-else {
-    $('#playAudio').remove() // just to make sure that it will not have 2x audio in the background 
-}
-//lower audio volume
-audio.volume = 0.8;
